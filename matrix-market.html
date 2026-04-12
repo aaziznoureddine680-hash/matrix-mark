@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سوق المصفوفة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --surface: #161a24;
+  --card: #1c2130;
+  --border: #2a3145;
+  --accent: #3b82f6;
+  --accent2: #22c55e;
+  --gold: #f59e0b;
+  --text: #e8eaf0;
+  --muted: #7a8299;
+  --danger: #ef4444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,15,20,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.header-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 60px;
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logo-dot {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.search-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.search-wrap input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 9px 16px 9px 44px;
+  color: var(--text);
+  font-family: 'Cairo', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-wrap input:focus { border-color: var(--accent); }
+.search-wrap input::placeholder { color: var(--muted); }
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.header-actions { display: flex; gap: 8px; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.2s, border-color 0.2s;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.icon-btn:hover { background: var(--card); border-color: var(--accent); }
+
+/* ===== STATUS BAR ===== */
+.status-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.gps-tag {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.gps-dot {
+  width: 6px; height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.live-time {
+  display: flex; align-items: center; gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== REGION CHIPS ===== */
+.region-scroll {
+  padding: 12px 20px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.region-scroll::-webkit-scrollbar { display: none; }
+
+.chip {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Cairo', sans-serif;
+}
+
+.chip:hover, .chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* ===== TABS ===== */
+.tabs-bar {
+  display: flex;
+  padding: 0 20px;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs-bar::-webkit-scrollbar { display: none; }
+
+.tab {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+  font-family: 'Cairo', sans-serif;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab:hover { color: var(--text); }
+
+/* ===== SECTION TITLE ===== */
+.section-header {
+  max-width: 1100px;
+  margin: 20px auto 0;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.count-badge {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ===== GRID ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px 20px 100px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ===== CARD ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+  cursor: pointer;
+  position: relative;
+  animation: fadeUp 0.4s both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card:nth-child(2) { animation-delay: 0.07s; }
+.card:nth-child(3) { animation-delay: 0.14s; }
+.card:nth-child(4) { animation-delay: 0.21s; }
+.card:nth-child(5) { animation-delay: 0.28s; }
+.card:nth-child(6) { animation-delay: 0.35s; }
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 32px rgba(59,130,246,0.12);
+}
+
+.card-img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+  background: var(--surface);
+  position: relative;
+}
+
+.card-img-placeholder {
+  width: 100%;
+  height: 170px;
+  background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+}
+
+.badges {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  left: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.badge-new { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+.badge-used { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.badge-verified { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+
+.card-body { padding: 14px; }
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-price {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--accent);
+  margin-bottom: 8px;
+  direction: ltr;
+  text-align: right;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.rating-pill {
+  background: rgba(245,158,11,0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.card-actions {
+  display: flex;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.action-btn {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  font-family: 'Cairo', sans-serif;
+  transition: opacity 0.2s, transform 0.1s;
+  text-decoration: none;
+  display: block;
+}
+
+.action-btn:active { transform: scale(0.96); }
+
+.btn-wa {
+  background: rgba(34,197,94,0.15);
+  color: #4ade80;
+  border: 1px solid rgba(34,197,94,0.3);
+}
+.btn-wa:hover { background: rgba(34,197,94,0.25); }
+
+.btn-call {
+  background: rgba(59,130,246,0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59,130,246,0.3);
+}
+.btn-call:hover { background: rgba(59,130,246,0.25); }
+
+.btn-chat {
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.btn-chat:hover { background: var(--card); color: var(--text); }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(13,15,20,0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  z-index: 100;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+  font-size: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  gap: 4px;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.nav-item.active { color: var(--accent); }
+
+.nav-icon { font-size: 20px; line-height: 1; }
+
+.nav-add {
+  background: var(--accent);
+  color: white !important;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 2px;
+  box-shadow: 0 4px 16px rgba(59,130,246,0.4);
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== MAP SECTION ===== */
+#map-section {
+  display: none;
+  max-width: 1100px;
+  margin: 20px auto 100px;
+  padding: 0 20px;
+}
+
+#map-section.visible { display: block; }
+
+.map-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.map-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.map-placeholder {
+  height: 300px;
+  background: linear-gradient(135deg, #0d1520 0%, #0a1a30 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.map-pin {
+  position: absolute;
+  font-size: 26px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.map-label {
+  text-align: center;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 16px;
+  z-index: 2;
+}
+
+/* ===== DASHBOARD ===== */
+#dashboard-section {
+  display: none;
+  max-width: 1100px;
+  margin: 20px auto 100px;
+  padding: 0 20px;
+}
+
+#dashboard-section.visible { display: block; }
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.stat-change {
+  font-size: 11px;
+  color: var(--accent2);
+  margin-top: 4px;
+}
+
+.listing-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.listing-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.listing-info { flex: 1; }
+.listing-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.listing-meta { font-size: 11px; color: var(--muted); }
+
+.listing-price {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+/* ===== SECTION DISPLAY TOGGLE ===== */
+#home-section { display: block; }
+</style>
+</head>
+<body>
+
+<div id="toast" class="toast"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-dot"></div>
+      سوق المصفوفة
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="ابحث عن منتج أو ارفع صورة...">
+    </div>
+    <div class="header-actions">
+      <span class="icon-btn" title="إشعارات">🔔</span>
+      <span class="icon-btn" title="حسابي">👤</span>
+    </div>
+  </div>
+</header>
+
+<div class="status-bar">
+  <div class="gps-tag">
+    <div class="gps-dot"></div>
+    📍 القنيطرة / بوقنادل
+  </div>
+  <div class="live-time" id="live-time">🕒 00:00:00</div>
+</div>
+
+<div class="region-scroll">
+  <button class="chip active" onclick="selectChip(this)">📍 الكل</button>
+  <button class="chip" onclick="selectChip(this)">الرباط</button>
+  <button class="chip" onclick="selectChip(this)">القنيطرة</button>
+  <button class="chip" onclick="selectChip(this)">كازابلانكا</button>
+  <button class="chip" onclick="selectChip(this)">فاس</button>
+  <button class="chip" onclick="selectChip(this)">مراكش</button>
+  <button class="chip" onclick="selectChip(this)">سلا</button>
+  <button class="chip" onclick="selectChip(this)">تمارة</button>
+</div>
+
+<div class="tabs-bar">
+  <button class="tab active" onclick="selectTab(this)">الكل</button>
+  <button class="tab" onclick="selectTab(this)">إلكترونيات</button>
+  <button class="tab" onclick="selectTab(this)">سيارات</button>
+  <button class="tab" onclick="selectTab(this)">قطع غيار</button>
+  <button class="tab" onclick="selectTab(this)">ملابس</button>
+  <button class="tab" onclick="selectTab(this)">مفروشات</button>
+</div>
+
+<!-- HOME SECTION -->
+<div id="home-section">
+  <div class="section-header">
+    <span class="section-title">قريب منك</span>
+    <span class="count-badge">6 منتجات</span>
+  </div>
+
+  <div class="grid">
+    <!-- Card 1 -->
+    <div class="card">
+      <div style="position:relative;">
+        <img class="card-img" src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80" alt="آيفون 13" onerror="this.style.display='none'">
+        <div class="badges">
+          <span class="badge badge-used">مستعمل</span>
+          <span class="badge badge-verified">✓ موثوق</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">آيفون 13 — 128GB</div>
+        <div class="card-price">4,500 د.م</div>
+        <div class="card-meta">
+          <span>📍 الرباط · 5كم</span>
+          <span class="rating-pill">⭐ 8/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card">
+      <div style="position:relative;">
+        <img class="card-img" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80" alt="حاسوب Lenovo" onerror="this.style.display='none'">
+        <div class="badges">
+          <span class="badge badge-new">جديد</span>
+          <span class="badge badge-verified">✓ موثوق</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">حاسوب Lenovo IdeaPad</div>
+        <div class="card-price">6,200 د.م</div>
+        <div class="card-meta">
+          <span>📍 القنيطرة · 2كم</span>
+          <span class="rating-pill">⭐ 10/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card">
+      <div style="position:relative;">
+        <div class="card-img-placeholder">🚗</div>
+        <div class="badges">
+          <span class="badge badge-used">مستعمل</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">تويوتا يارس 2019</div>
+        <div class="card-price">92,000 د.م</div>
+        <div class="card-meta">
+          <span>📍 سلا · 11كم</span>
+          <span class="rating-pill">⭐ 7/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="card">
+      <div style="position:relative;">
+        <div class="card-img-placeholder">🔧</div>
+        <div class="badges">
+          <span class="badge badge-used">مستعمل</span>
+          <span class="badge badge-verified">✓ موثوق</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">قطع غيار بيجو 206</div>
+        <div class="card-price">450 د.م</div>
+        <div class="card-meta">
+          <span>📍 القنيطرة · 3كم</span>
+          <span class="rating-pill">⭐ 6/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="card">
+      <div style="position:relative;">
+        <div class="card-img-placeholder">📺</div>
+        <div class="badges">
+          <span class="badge badge-new">جديد</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">تلفاز Samsung 55" OLED</div>
+        <div class="card-price">5,800 د.م</div>
+        <div class="card-meta">
+          <span>📍 تمارة · 14كم</span>
+          <span class="rating-pill">⭐ 10/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="card">
+      <div style="position:relative;">
+        <div class="card-img-placeholder">🏍️</div>
+        <div class="badges">
+          <span class="badge badge-used">مستعمل</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-title">دراجة هوندا 125cc</div>
+        <div class="card-price">12,500 د.م</div>
+        <div class="card-meta">
+          <span>📍 الرباط · 8كم</span>
+          <span class="rating-pill">⭐ 8/10</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://wa.me/212600000000?text=هل هذا المنتج متاح؟" class="action-btn btn-wa" onclick="toast('فتح واتساب...')">واتساب</a>
+          <a href="tel:+212600000000" class="action-btn btn-call" onclick="toast('جارٍ الاتصال...')">اتصال</a>
+          <button class="action-btn btn-chat" onclick="toast('فتح الدردشة...')">دردشة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAP SECTION -->
+<div id="map-section">
+  <div class="map-card">
+    <div class="map-header">
+      <div style="font-weight:700; font-size:15px;">🗺️ خريطة المنتجات القريبة</div>
+      <span class="badge badge-verified" style="font-size:11px; padding:4px 10px;">GPS نشط</span>
+    </div>
+    <div class="map-placeholder">
+      <div class="map-grid-lines"></div>
+      <div class="map-pin" style="top:30%; left:45%;">📍</div>
+      <div class="map-pin" style="top:50%; left:60%; animation-delay:0.4s;">🛒</div>
+      <div class="map-pin" style="top:60%; left:30%; animation-delay:0.8s;">🛒</div>
+      <div class="map-pin" style="top:25%; left:70%; animation-delay:1.2s;">🛒</div>
+      <div class="map-label">
+        منطقتك: القنيطرة / بوقنادل<br>
+        <span style="font-size:12px; color: var(--muted); font-weight:400;">يتطلب ربط Google Maps API</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD SECTION -->
+<div id="dashboard-section">
+  <div class="section-header" style="margin-bottom:14px;">
+    <span class="section-title">لوحتي الشخصية</span>
+  </div>
+  <div class="dash-grid">
+    <div class="stat-card">
+      <div class="stat-label">إجمالي مشاهداتي</div>
+      <div class="stat-value">1,284</div>
+      <div class="stat-change">↑ +12% هذا الأسبوع</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">طلبات مستلمة</div>
+      <div class="stat-value">37</div>
+      <div class="stat-change">↑ +5 اليوم</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">منتجاتي المنشورة</div>
+      <div class="stat-value">6</div>
+      <div class="stat-change">3 نشطة · 3 مباعة</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">تقييم البائع</div>
+      <div class="stat-value" style="color: var(--gold);">4.8 ⭐</div>
+      <div class="stat-change" style="color: var(--accent2);">موثوق · علامة صح</div>
+    </div>
+  </div>
+
+  <div style="font-size:12px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">منتجاتي</div>
+
+  <div class="listing-row">
+    <div class="listing-icon">📱</div>
+    <div class="listing-info">
+      <div class="listing-title">آيفون 13 — 128GB</div>
+      <div class="listing-meta">نشط · 48 مشاهدة · 6 طلبات</div>
+    </div>
+    <div class="listing-price">4,500 د.م</div>
+  </div>
+
+  <div class="listing-row">
+    <div class="listing-icon">💻</div>
+    <div class="listing-info">
+      <div class="listing-title">حاسوب Lenovo IdeaPad</div>
+      <div class="listing-meta">نشط · 31 مشاهدة · 3 طلبات</div>
+    </div>
+    <div class="listing-price">6,200 د.م</div>
+  </div>
+
+  <div class="listing-row" style="opacity:0.5;">
+    <div class="listing-icon">🚗</div>
+    <div class="listing-info">
+      <div class="listing-title">تويوتا يارس 2019</div>
+      <div class="listing-meta">مباعة</div>
+    </div>
+    <div class="listing-price" style="color:var(--muted); text-decoration:line-through;">92,000</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="nav-item active" id="nav-home" onclick="showSection('home')">
+    <span class="nav-icon">🏠</span>
+    <span>الرئيسية</span>
+  </div>
+  <div class="nav-item" id="nav-map" onclick="showSection('map')">
+    <span class="nav-icon">📍</span>
+    <span>الخريطة</span>
+  </div>
+  <div class="nav-item" onclick="toast('إضافة منتج جديد...')">
+    <div class="nav-add">＋</div>
+    <span>إضافة</span>
+  </div>
+  <div class="nav-item" onclick="toast('رسائلك...')">
+    <span class="nav-icon">💬</span>
+    <span>رسائل</span>
+  </div>
+  <div class="nav-item" id="nav-dash" onclick="showSection('dashboard')">
+    <span class="nav-icon">👤</span>
+    <span>حسابي</span>
+  </div>
+</nav>
+
+<script>
+// Time
+function updateTime() {
+  const n = new Date();
+  const pad = v => String(v).padStart(2,'0');
+  document.getElementById('live-time').textContent =
+    '🕒 ' + pad(n.getHours()) + ':' + pad(n.getMinutes()) + ':' + pad(n.getSeconds());
+}
+setInterval(updateTime, 1000);
+updateTime();
+
+// Toast
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// Chips
+function selectChip(el) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Tabs
+function selectTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Section switching
+function showSection(name) {
+  document.getElementById('home-section').style.display = 'none';
+  document.getElementById('map-section').classList.remove('visible');
+  document.getElementById('dashboard-section').classList.remove('visible');
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  if (name === 'home') {
+    document.getElementById('home-section').style.display = 'block';
+    document.getElementById('nav-home').classList.add('active');
+  } else if (name === 'map') {
+    document.getElementById('map-section').classList.add('visible');
+    document.getElementById('nav-map').classList.add('active');
+  } else if (name === 'dashboard') {
+    document.getElementById('dashboard-section').classList.add('visible');
+    document.getElementById('nav-dash').classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
