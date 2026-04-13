@@ -28,6 +28,15 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+<div style="background: var(--surface); border: 1px solid var(--accent); padding: 20px; border-radius: 10px; margin: 20px; text-align: center; position: relative; z-index: 1000;">
+    <h3 style="color: var(--accent);">➕ أضف منتجك للسوق</h3>
+    <input type="text" id="pName" placeholder="اسم المنتج" style="width: 80%; padding: 10px; margin: 5px; background: var(--bg); color: var(--text); border: 1px solid var(--border);">
+    <input type="number" id="pPrice" placeholder="السعر" style="width: 80%; padding: 10px; margin: 5px; background: var(--bg); color: var(--text); border: 1px solid var(--border);">
+    <input type="text" id="pImg" placeholder="رابط الصورة" style="width: 80%; padding: 10px; margin: 5px; background: var(--bg); color: var(--text); border: 1px solid var(--border);">
+    <button onclick="addProduct()" style="background: var(--accent); color: var(--bg); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-top: 10px;">نشر الآن</button>
+</div>
+
+<div id="marketContainer" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; position: relative; z-index: 1000;"></div>
 }
 
 /* ===== HEADER ===== */
@@ -980,3 +989,29 @@ function showSection(name) {
 </script>
 </body>
 </html>
+function addProduct() {
+    const name = document.getElementById('pName').value;
+    const price = document.getElementById('pPrice').value;
+    const img = document.getElementById('pImg').value;
+
+    if(name && price && img) {
+        const container = document.getElementById('marketContainer');
+        const productHTML = `
+            <div style="border: 1px solid #00ff00; background: #111; padding: 15px; width: 200px; border-radius: 10px; text-align: center; color: white;">
+                <img src="${img}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 5px;">
+                <h4 style="margin: 10px 0;">${name}</h4>
+                <p style="color: #00ff00; font-weight: bold;">${price} درهم</p>
+                <a href="#" style="background: white; color: black; padding: 5px 10px; text-decoration: none; border-radius: 5px; font-size: 0.8em;">شراء الآن</a>
+            </div>
+        `;
+        container.innerHTML += productHTML;
+        
+        // مسح الخانات بعد الإضافة
+        document.getElementById('pName').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pImg').value = '';
+        alert("تمت إضافة منتجك بنجاح!");
+    } else {
+        alert("يرجى ملء جميع الخانات!");
+    }
+}
